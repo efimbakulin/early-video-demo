@@ -1,18 +1,75 @@
 - hosts: media-server
 
   vars:
-    ansible_connection: local
-    application_root: "/var/www/"
-    application_source:
+    application_root: "/var/www/application"
+    application_source: "git@github.com:efimbakulin/early-video-demo.git"
+    application_user: "www-data"
+    uwsgi_port: 9999
   tasks:
     - name: install dependenices
       apt:
-        name: "{{ item }}"
-      with_items:
-        - python3
-        - python3-pip
-        - uwsgi-plugin-python3
-        - python3-virtualenv
-        - nginx
+        name:
+          [
+            "git",
+            "python3",
+            "python3-pip",
+            "uwsgi-plugin-python3",
+            "nginx",
+            "uwsgi",
+          ]
       become: yes
-    -
+    - name: configuring nginx
+      template: src="templates/nginx.conf" dest="/etc/nginx/sites-enabled/default"
+      notify: reload nginx
+      become: yes
+    - name: creating applicaton root dir
+      file:
+        path: "{{ application_root }}"
+        state: directory
+        owner: "{{application_user}}"
+      become: yes
+
+    - name: www-data onwer of /var/www
+      file:
+        path: "/var/www"
+        state: directory
+        owner: "{{application_user}}"
+      become: yes
+    - name: git checkout sources
+      git:
+        repo: https://github.com/efimbakulin/early-video-demo
+        dest: "{{ application_root }}"
+      become_user: "{{application_user}}"
+      become: yes
+      notify: restart uwsgi
+    - name: installing pip requirements
+      pip:
+        requirements: "{{ application_root }}/src/requirements.txt"
+        executable: pip3
+      notify: restart uwsgi
+    - name: configuring uwsgi
+      template:
+        src: "templates/uwsgi.ini"
+        dest: "/etc/uwsgi/apps-enabled/flussonic-demo.ini"
+        owner: "{{application_user}}"
+      become: yes
+      notify: restart uwsgi
+    - name: deploying programmes
+      copy:
+        src: "templates/programme.json"
+        dest: "/etc/flussonic/programme.json"
+        owner: "{{application_user}}"
+      become: yes
+      notify: restart uwsgi
+
+  handlers:
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
+      become: yes
+    - name: restart uwsgi
+      service:
+        name: uwsgi
+        state: restarted
+      become: yes

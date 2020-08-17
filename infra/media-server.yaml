@@ -1,6 +1,5 @@
 - hosts: media-server
   vars:
-    ansible_connection: local
     storage_path: "/var/tmp/flussonic/storage"
     flussonic_user: root
   tasks:
@@ -33,11 +32,16 @@
     - name: configuring
       template: src="templates/flussonic.conf" dest="/etc/flussonic/flussonic.conf"
       become: yes
-      notify: reload flussonic
+      notify: restart flussonic
 
   handlers:
     - name: reload flussonic
       service:
         name: flussonic
         state: reloaded
+      become: yes
+    - name: restart flussonic
+      service:
+        name: flussonic
+        state: restarted
       become: yes
