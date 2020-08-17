@@ -36,8 +36,9 @@ def application(env, start_response):
         'streaming_qs': qs
     }
     page = PAGE_TEMPLATE.render(**ctx)
-    start_response(page)
+    start_response("200 OK")
+    return page
 
 
 if __name__ == '__main__':
-    application({'QUERY_STRING': 'c=1&p=3'}, lambda *x: print(*x))
+    application({'QUERY_STRING': 'c=1&p=3'}, lambda *x: pass)
