@@ -2,31 +2,17 @@ import json
 import os
 from urllib.parse import parse_qs
 
-from dateutil.parser import parse
 from jinja2 import Template
 
+import template
 from render import render_show_time
 from utils import generate_query_string, parse_show_time
 
-CONFIG = None
-PAGE_TEMPLATE = None
-PROGRAMMES = None
+PAGE_TEMPLATE = Template(template.TEMPLATE)
 
-
-def init():
-    global CONFIG, PAGE_TEMPLATE, PROGRAMMES
-
-    config_path = os.environ.get(
-        'PLAYER_CONFIG', "/etc/flussonic/application.conf")
-
-    with open(config_path) as f:
-        CONFIG = json.load(f)
-
-    with open(CONFIG['page_template']) as f:
-        PAGE_TEMPLATE = Template(f.read())
-
-    with open(CONFIG['programme']) as f:
-        PROGRAMMES = json.load(f)
+with open(os.environ.get(
+        'PROGRAMME_PATH', "/etc/flussonic/programme.json")) as f:
+    PROGRAMMES = json.load(f)
 
 
 def application(env, start_response):
@@ -51,9 +37,6 @@ def application(env, start_response):
     }
     page = PAGE_TEMPLATE.render(**ctx)
     print(page)
-
-
-init()
 
 
 if __name__ == '__main__':
