@@ -1,0 +1,43 @@
+- hosts: media-server
+  vars:
+    ansible_connection: local
+    storage_path: "/var/tmp/flussonic/storage"
+    flussonic_user: root
+  tasks:
+    - name: apt-key
+      apt_key:
+        url: http://apt.flussonic.com/binary/gpg.key
+        state: present
+      become: yes
+    - name: apt repository
+      apt_repository:
+        repo: deb http://apt.flussonic.com binary/
+        state: present
+        update_cache: yes
+      become: yes
+    - name: install flussonic
+      apt:
+        name: flussonic=20.08
+        state: present
+      become: yes
+    - name: Storage directory
+      file:
+        path: "{{ storage_path }}"
+        state: directory
+        owner: "{{flussonic_user}}"
+      become: yes
+    - name: adding license
+      copy: content="l4|zvWE0ja1flQWzg7zfCaEC3|r6BzpmVPpjgKpn9IunpFp6lLbCZOp3" dest="/etc/flussonic/license.txt"
+      become: yes
+      notify: reload flussonic
+    - name: configuring
+      template: src="templates/flussonic.conf" dest="/etc/flussonic/flussonic.conf"
+      become: yes
+      notify: reload flussonic
+
+  handlers:
+    - name: reload flussonic
+      service:
+        name: flussonic
+        state: reloaded
+      become: yes
