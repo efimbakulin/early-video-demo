@@ -36,5 +36,5 @@ def application(env, start_response):
         'streaming_qs': qs
     }
     page = PAGE_TEMPLATE.render(**ctx)
-    start_response("200 OK", [('Content-Type', 'text/html')])
+    start_response("200 OK", [('Content-Type', 'text/html;charset=utf-8')])
     yield page.encode("utf-8")
