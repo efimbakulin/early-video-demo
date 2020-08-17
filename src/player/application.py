@@ -16,7 +16,8 @@ PROGRAMMES = None
 def init():
     global CONFIG, PAGE_TEMPLATE, PROGRAMMES
 
-    config_path = os.environ.get('PLAYER_CONFIG', "files/config.json")
+    config_path = os.environ.get(
+        'PLAYER_CONFIG', "/etc/flussonic/application.conf")
 
     with open(config_path) as f:
         CONFIG = json.load(f)
