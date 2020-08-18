@@ -20,7 +20,7 @@ def application(env, start_response):
     channel_id = qs.get('c', ['1']).pop()
     programme_id = qs.get('p', None)
     channel = PROGRAMMES['channels'][channel_id]
-    fromts = tots = None
+    fromts = tots = show = None
     if programme_id:
         programme_id = int(programme_id.pop())
         show = channel['programme'][programme_id]
@@ -33,7 +33,8 @@ def application(env, start_response):
         'render_show_time': render_show_time,
         'channels': PROGRAMMES['channels'],
         'channel_id': channel_id,
-        'streaming_qs': qs
+        'streaming_qs': qs,
+        'current_show': show,
     }
     page = PAGE_TEMPLATE.render(**ctx)
     start_response("200 OK", [('Content-Type', 'text/html;charset=utf-8')])
