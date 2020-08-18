@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from player import utils
+import utils
 
 
 class UriGeneratorTests(TestCase):

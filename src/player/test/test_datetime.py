@@ -4,7 +4,7 @@ from unittest import TestCase
 from dateutil import tz
 from parameterized import parameterized
 
-from player import utils
+import utils
 
 
 class DateTimeTests(TestCase):

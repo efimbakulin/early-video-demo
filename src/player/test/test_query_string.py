@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from freezegun import freeze_time
 
-from player import utils
+import utils
 
 
 @freeze_time("2020-08-10 10:00:00 +03")
