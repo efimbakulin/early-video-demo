@@ -16,7 +16,8 @@
       become: yes
     - name: install flussonic
       apt:
-        name: flussonic=20.08
+        name: ['flussonic=20.08']
+        install_recommends: yes
         state: present
       become: yes
     - name: Storage directory
