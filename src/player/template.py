@@ -19,7 +19,7 @@ TEMPLATE = """
         </div>
         <div class="row">
             <div class="col-md-8">
-                <iframe style="width:900px; height:680px;" allowfullscreen src="http://localhost:8080/channel/{{channel_id}}/embed.html?{{streaming_qs}}"></iframe>
+                <iframe style="width:900px; height:680px;" allowfullscreen src="http://{{hostname}}/channel/{{channel_id}}/embed.html?{{streaming_qs}}"></iframe>
             </div>
             {% for id, c in channels.items() %}
             <div class="col-md-2  height=680px">
