@@ -5,7 +5,7 @@ from urllib.parse import parse_qs
 from jinja2 import Template
 
 import template
-from render import render_show_time
+from render import render_show_time, show_started
 from utils import generate_query_string, parse_show_time
 
 PAGE_TEMPLATE = Template(template.TEMPLATE)
@@ -31,6 +31,7 @@ def application(env, start_response):
 
     ctx = {
         'render_show_time': render_show_time,
+        'show_started': show_started,
         'channels': PROGRAMMES['channels'],
         'channel_id': channel_id,
         'streaming_qs': qs,

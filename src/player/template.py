@@ -33,7 +33,11 @@ TEMPLATE = """
                     </div>
                     {% for p in c['programme'] %}
                     <div class="list-group-item">
-                        <a href="?c={{c['id']}}&p={{loop.index-1}}"> {{ p['title'] }}</a>
+                        {%if show_started(p) %}
+                            <a href="?c={{c['id']}}&p={{loop.index-1}}"> {{ p['title'] }}</a>
+                        {% else %}
+                            {{ p['title'] }}
+                        {% endif %}
                         <br/>
                         {{ render_show_time (p) }}
                     </div>
